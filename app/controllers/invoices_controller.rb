@@ -283,9 +283,9 @@ class InvoicesController < ApplicationController
     else
       i=2
       path = ExportChannels.path export_id
-      destination="#{path}/#{@invoice.client.hashid}_#{@invoice.id}.#{file_ext}".gsub(/\//,'')
+      destination="#{path}/" + "#{@invoice.client.hashid}_#{@invoice.id}.#{file_ext}".gsub(/\//,'')
       while File.exists? destination
-        destination="#{path}/#{@invoice.client.hashid}_#{i}_#{@invoice.id}.#{file_ext}".gsub(/\//,'')
+        destination="#{path}/" + "#{@invoice.client.hashid}_#{i}_#{@invoice.id}.#{file_ext}".gsub(/\//,'')
         i+=1
       end
       FileUtils.mv(invoice_file.path,destination)
