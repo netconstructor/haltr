@@ -48,7 +48,7 @@ class ExportChannels
   end
 
   def self.path(id)
-    part1 = "#{Setting.plugin_haltr['export_channels_path']}/#{self.channel(id)}"
+    "#{Setting.plugin_haltr['export_channels_path']}/#{self.channel(id)}"
   end
 end
 

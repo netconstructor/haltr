@@ -255,7 +255,6 @@ class InvoicesController < ApplicationController
   def send_invoice
     raise @invoice.export_errors.collect {|e| l(e)}.join(", ") unless @invoice.can_be_exported?
     export_id = @invoice.client.invoice_format
-    path = ExportChannels.path export_id
     @format = ExportChannels.format export_id
     @company = @project.company
     file_ext = @format == "pdf" ? "pdf" : "xml"
@@ -266,18 +265,33 @@ class InvoicesController < ApplicationController
       invoice_file.write(render_to_string(:template => "invoices/#{@format}.xml.erb", :layout => false))
     end
     invoice_file.close
-    i=2
-    destination="#{path}/" + "#{@invoice.client.hashid}_#{@invoice.id}.#{file_ext}".gsub(/\//,'')
-    while File.exists? destination
-      destination="#{path}/" + "#{@invoice.client.hashid}_#{i}_#{@invoice.id}.#{file_ext}".gsub(/\//,'')
-      i+=1
+    if Setting.plugin_haltr['export_channels_path'].blank?
+      invoice_file.open
+      invoice_file.rewind
+      # send by rest to trace_url
+      B2bInvoice.connect(Setting.plugin_haltr['trace_url'])
+      B2bInvoice.create(:content   => invoice_file.read,
+                        :hashid    => @invoice.client.hashid,
+                        :haltr_id  => @invoice.id,
+                        :extension => file_ext,
+                        :channel   => ExportChannels.channel(export_id))
+      invoice_file.close
+      invoice_file.unlink
+    else
+      i=2
+      path = ExportChannels.path export_id
+      destination="#{path}/" + "#{@invoice.client.hashid}_#{@invoice.id}.#{file_ext}".gsub(/\//,'')
+      while File.exists? destination
+        destination="#{path}/" + "#{@invoice.client.hashid}_#{i}_#{@invoice.id}.#{file_ext}".gsub(/\//,'')
+        i+=1
+      end
+      FileUtils.mv(invoice_file.path,destination)
     end
-    FileUtils.mv(invoice_file.path,destination)
     #TODO state restrictions
     @invoice.queue || @invoice.requeue
     flash[:notice] = l(:notice_invoice_sent)
   rescue Exception => e
-    flash[:error] = "#{l(:error_invoice_not_sent)}: #{e.message} #{e.backtrace}"
+    flash[:error] = "#{l(:error_invoice_not_sent)}: #{e.message}"
   ensure
     redirect_to :action => 'show', :id => @invoice
   end

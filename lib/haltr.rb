@@ -4,3 +4,4 @@ require 'state_machine'
 gem 'money', '>=3.1.5'
 require 'money'
 require "utils"
+require 'ares_pagination'
