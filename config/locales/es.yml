@@ -176,6 +176,8 @@ es:
   default: "Por defecto"
   only_one_default_allowed_for: "%{tax_name}: Solo se acepta un impuesto por defecto"
   add_taxes_on_company: "Puedes gestionar los impuestos en \"Mi empresa\""
+  button_download_new_invoices: "Descargar zip de facturas nuevas"
+  label_download_new_invoices_info: "Genera un zip con todas las facturas nuevas en formato PDF"
 
   # Events
   events: "Log de eventos"
@@ -336,7 +338,7 @@ es:
   halt_configure_before_use: "Por favor, primero configura los datos de la empresa"
   warning_can_not_generate_invoice: "No se ha podido generar la factura de la plantilla {{value}}"
   notice_invoice_sent: "La factura se ha enviado"
-  error_invoice_not_sent: "La factura no se ha podido enviar"
+  error_invoice_not_sent: "La factura %{num} no se ha podido enviar"
   notice_empty_n19: "No hay datos para generar un N19"
   notice_n19_done:  "Se ha cerrado el N19 de fecha {{value}}"
   notice_uploaded_file_not_found: "No s'ha encontrado el fichero"
@@ -350,3 +352,8 @@ es:
   label_received_with_num: "Facturas recibidas (%{num} nuevas)"
   help_invoice_format: "Formato y transporte preferido de recepción de facturas"
   logo_not_image: "El logo no se ha guardado porque no era una imagen"
+  invoices_not_sent: "%{num} facturas no se han podido enviar:"
+  invoices_sent: "%{num} facturas enviadas"
+  invoice_limit_reached: "Se ha alcanzado el límite de envio simultáneo (10 facturas).<br />Puedes volver a enviar para procesar 10 facturas más."
+  zip_gem_required: "Se necesita instalar la gem 'zip' para usar esta funcionalidad"
+  too_much_invoices: "Masses factures a descarregar (%{num} factures, màxim 10)"
