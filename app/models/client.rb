@@ -36,6 +36,15 @@ class Client < ActiveRecord::Base
     self.language = "es" if self.language.blank?
   end
 
+  def emails
+    mails = []
+    mails << self.email unless self.email.blank?
+    people.each do |person|
+      mails << person.email unless person.email.blank?
+    end
+    mails.join(",")
+  end
+
   # Masks db value with default if db value is deprecated
   def invoice_format
     format = read_attribute(:invoice_format)
@@ -116,8 +125,8 @@ class Client < ActiveRecord::Base
 
   def set_hashid_value
     unless hashid
-      require "md5"
-      self.hashid=MD5.hexdigest(Time.now.to_f.to_s)[0...10]
+      require "digest/md5"
+      self.hashid=Digest::MD5.hexdigest(Time.now.to_f.to_s)[0...10]
     end
   end
 
